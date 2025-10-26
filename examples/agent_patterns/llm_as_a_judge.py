@@ -3,8 +3,11 @@ from __future__ import annotations
 import asyncio
 from dataclasses import dataclass
 from typing import Literal
+from pprint import pprint
 
 from agents import Agent, ItemHelpers, Runner, TResponseInputItem, trace
+from dotenv import load_dotenv
+load_dotenv()
 
 """
 This example shows the LLM as a judge pattern. The first agent generates an outline for a story.
@@ -54,7 +57,7 @@ async def main() -> None:
 
             input_items = story_outline_result.to_input_list()
             latest_outline = ItemHelpers.text_message_outputs(story_outline_result.new_items)
-            print("Story outline generated")
+            print("Story outline generated: " + latest_outline)
 
             evaluator_result = await Runner.run(evaluator, input_items)
             result: EvaluationFeedback = evaluator_result.final_output

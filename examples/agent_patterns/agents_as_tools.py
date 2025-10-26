@@ -1,6 +1,8 @@
 import asyncio
-
 from agents import Agent, ItemHelpers, MessageOutputItem, Runner, trace
+from dotenv import load_dotenv
+load_dotenv()
+
 
 """
 This example shows the agents-as-tools pattern. The frontline agent receives a user message and

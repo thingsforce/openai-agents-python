@@ -1,9 +1,11 @@
+#%% packages
 import asyncio
-
 from pydantic import BaseModel
-
 from agents import Agent, AgentBase, RunContextWrapper, Runner, trace
+from dotenv import load_dotenv
+load_dotenv()
 
+#%% description
 """
 This example demonstrates the agents-as-tools pattern with conditional tool enabling.
 Agent tools are dynamically enabled/disabled based on user access levels using the
@@ -25,7 +27,7 @@ def european_enabled(ctx: RunContextWrapper[AppContext], agent: AgentBase) -> bo
     return ctx.context.language_preference == "european"
 
 
-# Create specialized agents
+#%% Create specialized agents
 spanish_agent = Agent(
     name="spanish_agent",
     instructions="You respond in Spanish. Always reply to the user's question in Spanish.",
@@ -41,7 +43,7 @@ italian_agent = Agent(
     instructions="You respond in Italian. Always reply to the user's question in Italian.",
 )
 
-# Create orchestrator with conditional tools
+#%% Create orchestrator with conditional tools
 orchestrator = Agent(
     name="orchestrator",
     instructions=(
@@ -68,7 +70,7 @@ orchestrator = Agent(
     ],
 )
 
-
+#%%
 async def main():
     """Interactive demo with LLM interaction."""
     print("Agents-as-Tools with Conditional Enabling\n")
@@ -85,7 +87,7 @@ async def main():
     preference_map = {"1": "spanish_only", "2": "french_spanish", "3": "european"}
     language_preference = preference_map.get(choice, "spanish_only")
 
-    # Create context and show available tools
+    #%% Create context and show available tools
     context = RunContextWrapper(AppContext(language_preference=language_preference))
     available_tools = await orchestrator.get_all_tools(context)
     tool_names = [tool.name for tool in available_tools]
@@ -111,3 +113,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+# %%

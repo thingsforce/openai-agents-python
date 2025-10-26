@@ -13,6 +13,8 @@ from agents import (
     Runner,
     output_guardrail,
 )
+from dotenv import load_dotenv
+load_dotenv()
 
 """
 This example shows how to use output guardrails.
@@ -49,7 +51,6 @@ async def sensitive_data_check(
         tripwire_triggered=phone_number_in_response or phone_number_in_reasoning,
     )
 
-
 agent = Agent(
     name="Assistant",
     instructions="You are a helpful assistant.",
@@ -60,8 +61,8 @@ agent = Agent(
 
 async def main():
     # This should be ok
-    await Runner.run(agent, "What's the capital of California?")
-    print("First message passed")
+    result = await Runner.run(agent, "What's the capital of California?")
+    print(f"{json.dumps(result.final_output.model_dump(), indent=2)}")
 
     # This should trip the guardrail
     try:

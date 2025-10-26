@@ -1,39 +1,64 @@
 import asyncio
 
 from agents import Agent, ItemHelpers, Runner, trace
+from dotenv import load_dotenv
+load_dotenv()
+
 
 """
 This example shows the parallelization pattern. We run the agent three times in parallel, and pick
 the best result.
 """
 
-spanish_agent = Agent(
-    name="spanish_agent",
-    instructions="You translate the user's message to Spanish",
+italian_agent = Agent(
+    name="italian_agent",
+    instructions="You translate the user's message to Italian",
 )
 
 translation_picker = Agent(
     name="translation_picker",
-    instructions="You pick the best Spanish translation from the given options.",
+    model="gpt-4o",
+    instructions="You pick the best Italian translation from the given options.",
 )
 
+def get_agent_model(agent_instance):
+    """Try multiple ways to extract the model name"""
+    # Common attribute names
+    possible_attrs = ['model', 'llm', '_model', 'model_name', 'model_id']
+    
+    for attr in possible_attrs:
+        if hasattr(agent_instance, attr):
+            value = getattr(agent_instance, attr)
+            if value:
+                return value
+    
+    # Check config if exists
+    if hasattr(agent_instance, 'config'):
+        config = agent_instance.config
+        if hasattr(config, 'get') and callable(config.get):
+            return config.get('model')
+    
+    return "Unknown"
 
 async def main():
-    msg = input("Hi! Enter a message, and we'll translate it to Spanish.\n\n")
+    print(f"Italian_agent using model: {get_agent_model(italian_agent)}")
+    print(f"Translation_picker using model: {get_agent_model(translation_picker)}")
+
+    msg = input("Hi! Enter a message, and we'll translate it to Italian.\n\n")
 
     # Ensure the entire workflow is a single trace
     with trace("Parallel translation"):
         res_1, res_2, res_3 = await asyncio.gather(
             Runner.run(
-                spanish_agent,
+                italian_agent,
                 msg,
             ),
             Runner.run(
-                spanish_agent,
+                italian_agent,
                 msg,
             ),
             Runner.run(
-                spanish_agent,
+                italian_agent,
                 msg,
             ),
         )
