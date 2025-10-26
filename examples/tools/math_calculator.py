@@ -69,9 +69,12 @@ def evaluate_formula(formula: str) -> float:
     
     # Validate that formula only contains safe characters
     # Allow: digits, operators, parentheses, decimal point
+    # This regex prevents all forms of code injection by only allowing mathematical symbols
     if not re.match(r'^[\d\+\-\*/\(\)\.\s]+$', formula):
         raise ValueError("Formula contains invalid characters")
     
+    # Safe to use eval() here because input is validated to only contain mathematical operators
+    # Note: ast.literal_eval() cannot evaluate mathematical expressions
     try:
         result = eval(formula)
         return float(result)
