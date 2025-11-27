@@ -10,6 +10,8 @@ import re
 from typing import Annotated
 
 from agents import Agent, Runner, function_tool
+from dotenv import load_dotenv
+load_dotenv()
 
 
 @function_tool
