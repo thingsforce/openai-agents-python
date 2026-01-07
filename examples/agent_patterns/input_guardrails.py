@@ -13,7 +13,7 @@ from agents import (
 )
 from dotenv import load_dotenv, find_dotenv
 load_dotenv()
-# load_dotenv(find_dotenv(usecwd=True))
+# load_dotenv(find_dotenv(usecwd=True), override=True)
 
 """
 This example shows how to use guardrails.
